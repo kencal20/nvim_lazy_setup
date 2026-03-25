@@ -34,10 +34,10 @@ require("lazy").setup({
       "nvim-tree/nvim-web-devicons",
       lazy = false,
       config = function()
-        require("nvim-web-devicons").setup {
+        require("nvim-web-devicons").setup({
           default = true,
           color_icons = true,
-        }
+        })
       end,
     },
     {
@@ -163,9 +163,20 @@ require("lazy").setup({
       "nvim-treesitter/nvim-treesitter",
       opts = {
         ensure_installed = {
-          "bash", "html", "javascript", "json", "lua", "markdown",
-          "markdown_inline", "python", "query", "regex", "tsx",
-          "typescript", "vim", "yaml",
+          "bash",
+          "html",
+          "javascript",
+          "json",
+          "lua",
+          "markdown",
+          "markdown_inline",
+          "python",
+          "query",
+          "regex",
+          "tsx",
+          "typescript",
+          "vim",
+          "yaml",
         },
       },
     },
@@ -183,7 +194,11 @@ require("lazy").setup({
       "nvim-lualine/lualine.nvim",
       event = "VeryLazy",
       opts = function(_, opts)
-        table.insert(opts.sections.lualine_x, { function() return "😄" end })
+        table.insert(opts.sections.lualine_x, {
+          function()
+            return "😄"
+          end,
+        })
       end,
     },
 
@@ -251,7 +266,7 @@ vim.diagnostic.config({
   },
   signs = true,
   underline = true,
-  update_in_insert = true,  -- live errors while typing
+  update_in_insert = true, -- live errors while typing
   severity_sort = true,
 })
 
@@ -259,4 +274,3 @@ vim.diagnostic.config({
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostics" })
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
-
