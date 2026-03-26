@@ -28,36 +28,25 @@ require("lazy").setup({
     { "nvim-mini/mini.icons", enabled = false },
 
     -- =========================
-    -- UI Plugins (icons, tree, bufferline)
+    -- UI Plugins
     -- =========================
     {
       "nvim-tree/nvim-web-devicons",
       lazy = false,
       config = function()
-        require("nvim-web-devicons").setup({
-          default = true,
-          color_icons = true,
-        })
+        require("nvim-web-devicons").setup({ default = true, color_icons = true })
       end,
     },
     {
       "nvim-tree/nvim-tree.lua",
       dependencies = { "nvim-tree/nvim-web-devicons" },
       opts = {
-        view = { side = "right" }, -- NvimTree on the RIGHT
+        view = { side = "right" },
         renderer = {
-          icons = {
-            show = {
-              file = true,
-              folder = true,
-              folder_arrow = true,
-            },
-          },
+          icons = { show = { file = true, folder = true, folder_arrow = true } },
         },
       },
-      config = function(_, opts)
-        require("nvim-tree").setup(opts)
-      end,
+      config = function(_, opts) require("nvim-tree").setup(opts) end,
     },
     {
       "akinsho/bufferline.nvim",
@@ -71,13 +60,11 @@ require("lazy").setup({
           separator_style = "slant",
         },
       },
-      config = function(_, opts)
-        require("bufferline").setup(opts)
-      end,
+      config = function(_, opts) require("bufferline").setup(opts) end,
     },
 
     -- =========================
-    -- Auto-save Plugin
+    -- Auto-save
     -- =========================
     {
       "Pocco81/auto-save.nvim",
@@ -92,9 +79,9 @@ require("lazy").setup({
     },
 
     -- =========================
-    -- Disabled / Optional
+    -- Trouble.nvim
     -- =========================
-    { "folke/trouble.nvim", enabled = false },
+    { "folke/trouble.nvim", enabled = true },
 
     -- =========================
     -- Completion
@@ -136,12 +123,7 @@ require("lazy").setup({
     -- =========================
     -- LSP Config
     -- =========================
-    {
-      "neovim/nvim-lspconfig",
-      opts = {
-        servers = { pyright = {} },
-      },
-    },
+    { "neovim/nvim-lspconfig", opts = { servers = { pyright = {} } } },
     {
       "neovim/nvim-lspconfig",
       dependencies = { "jose-elias-alvarez/typescript.nvim" },
@@ -163,28 +145,10 @@ require("lazy").setup({
       "nvim-treesitter/nvim-treesitter",
       opts = {
         ensure_installed = {
-          "bash",
-          "html",
-          "javascript",
-          "json",
-          "lua",
-          "markdown",
-          "markdown_inline",
-          "python",
-          "query",
-          "regex",
-          "tsx",
-          "typescript",
-          "vim",
-          "yaml",
+          "bash","html","javascript","json","lua","markdown","markdown_inline",
+          "python","query","regex","tsx","typescript","vim","yaml",
         },
       },
-    },
-    {
-      "nvim-treesitter/nvim-treesitter",
-      opts = function(_, opts)
-        vim.list_extend(opts.ensure_installed, { "tsx", "typescript" })
-      end,
     },
 
     -- =========================
@@ -194,22 +158,72 @@ require("lazy").setup({
       "nvim-lualine/lualine.nvim",
       event = "VeryLazy",
       opts = function(_, opts)
-        table.insert(opts.sections.lualine_x, {
-          function()
-            return "😄"
-          end,
-        })
+        table.insert(opts.sections.lualine_x, { function() return "😄" end })
       end,
     },
 
     -- =========================
-    -- Mason
+    -- Mason (always loaded)
     -- =========================
     {
       "mason.nvim",
-      opts = {
-        ensure_installed = { "stylua", "shellcheck", "shfmt", "flake8" },
-      },
+      lazy = false,  -- ensures :MasonInstall & binaries exist immediately
+      opts = { ensure_installed = { "stylua", "prettier", "black", "shfmt", "markdownlint" } },
+    },
+
+    -- =========================
+    -- Formatter.nvim
+    -- =========================
+    {
+      "mhartington/formatter.nvim",
+      lazy = false,  -- load immediately so :Format works
+      dependencies = { "mason.nvim" },
+      config = function()
+        local formatter = require("formatter")
+        formatter.setup({
+          logging = false,
+          filetype = {
+            lua = {
+              function() return { exe = vim.fn.stdpath("data").."/mason/bin/stylua", args = { "--search-parent-directories", "-i", vim.api.nvim_buf_get_name(0) }, stdin = false } end
+            },
+            javascript = {
+              function() return { exe = vim.fn.stdpath("data").."/mason/bin/prettier", args = { "--stdin-filepath", vim.api.nvim_buf_get_name(0) }, stdin = true } end
+            },
+            typescript = {
+              function() return { exe = vim.fn.stdpath("data").."/mason/bin/prettier", args = { "--stdin-filepath", vim.api.nvim_buf_get_name(0) }, stdin = true } end
+            },
+            json = {
+              function() return { exe = vim.fn.stdpath("data").."/mason/bin/prettier", args = { "--stdin-filepath", vim.api.nvim_buf_get_name(0) }, stdin = true } end
+            },
+            html = {
+              function() return { exe = vim.fn.stdpath("data").."/mason/bin/prettier", args = { "--stdin-filepath", vim.api.nvim_buf_get_name(0) }, stdin = true } end
+            },
+            css = {
+              function() return { exe = vim.fn.stdpath("data").."/mason/bin/prettier", args = { "--stdin-filepath", vim.api.nvim_buf_get_name(0) }, stdin = true } end
+            },
+            markdown = {
+              function() return { exe = vim.fn.stdpath("data").."/mason/bin/markdownlint", args = { "--fix", vim.api.nvim_buf_get_name(0) }, stdin = false } end
+            },
+            sh = {
+              function() return { exe = vim.fn.stdpath("data").."/mason/bin/shfmt", args = { "-w", "-i", "2" }, stdin = false } end
+            },
+            python = {
+              function() return { exe = vim.fn.stdpath("data").."/mason/bin/black", args = { vim.api.nvim_buf_get_name(0) }, stdin = false } end
+            },
+          },
+        })
+
+        -- Format keymap
+        vim.keymap.set("n", "<leader>f", function() vim.cmd("Format") end, { desc = "Format current buffer" })
+
+        -- Auto-format on save
+        vim.cmd([[
+          augroup FormatOnSave
+            autocmd!
+            autocmd BufWritePre * Format
+          augroup END
+        ]])
+      end,
     },
 
     -- =========================
@@ -218,9 +232,7 @@ require("lazy").setup({
     { "L3MON4D3/LuaSnip" },
     {
       "rafamadriz/friendly-snippets",
-      config = function()
-        require("luasnip.loaders.from_vscode").lazy_load()
-      end,
+      config = function() require("luasnip.loaders.from_vscode").lazy_load() end,
     },
 
     -- =========================
@@ -231,46 +243,34 @@ require("lazy").setup({
       config = function()
         local lspconfig = require("lspconfig")
         lspconfig.tsserver.setup({
-          root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", ".git"),
+          root_dir = lspconfig.util.root_pattern("package.json","tsconfig.json",".git"),
           init_options = {
-            typescript = {
-              tsdk = vim.fn.stdpath("data") .. "/npm-global/lib/node_modules/typescript/lib",
-            },
+            typescript = { tsdk = vim.fn.stdpath("data").."/npm-global/lib/node_modules/typescript/lib" }
           },
         })
       end,
     },
   },
 
-  -- =========================
-  -- Defaults & performance
-  -- =========================
-  defaults = {
-    lazy = false,
-    version = false,
-  },
-  performance = {
-    rtp = {
-      disabled_plugins = { "gzip", "tarPlugin", "tohtml", "tutor", "zipPlugin" },
-    },
-  },
+  defaults = { lazy = false, version = false },
+  performance = { rtp = { disabled_plugins = { "gzip","tarPlugin","tohtml","tutor","zipPlugin" } } },
 })
 
 -- =========================
--- LSP Diagnostics (live updates)
+-- LSP Diagnostics
 -- =========================
 vim.diagnostic.config({
-  virtual_text = {
-    prefix = "●",
-    spacing = 2,
-  },
+  virtual_text = { prefix = "●", spacing = 2 },
   signs = true,
   underline = true,
-  update_in_insert = true, -- live errors while typing
+  update_in_insert = true,
   severity_sort = true,
 })
 
--- Keymaps for diagnostics
+-- Diagnostics keymaps
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostics" })
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+
+-- Trouble toggle
+vim.keymap.set("n", "<C-n>", function() require("trouble").toggle("diagnostics") end, { desc = "Toggle Diagnostics" })
