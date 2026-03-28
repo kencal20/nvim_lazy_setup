@@ -56,20 +56,20 @@ require("lazy").setup({
 
     -- Mason
     {
-      "williamboman/mason.nvim",
+      "mason-org/mason.nvim",
       lazy = false,
       config = function()
         require("mason").setup()
       end,
     },
     {
-      "williamboman/mason-lspconfig.nvim",
-      dependencies = { "williamboman/mason.nvim" },
+      "mason-org/mason-lspconfig.nvim",
+      dependencies = { "mason-org/mason.nvim" },
       opts = { ensure_installed = { "ts_ls", "pyright", "tailwindcss", "html", "cssls", "jsonls" } },
     },
     {
       "WhoIsSethDaniel/mason-tool-installer.nvim",
-      dependencies = { "williamboman/mason.nvim" },
+      dependencies = { "mason-org/mason.nvim" },
       opts = {
         ensure_installed = { "stylua", "prettier", "black", "shfmt", "markdownlint" },
         auto_update = false,
