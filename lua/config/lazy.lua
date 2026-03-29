@@ -71,7 +71,7 @@ require("lazy").setup({
       "WhoIsSethDaniel/mason-tool-installer.nvim",
       dependencies = { "mason-org/mason.nvim" },
       opts = {
-        ensure_installed = { "stylua", "prettier", "black", "shfmt", "markdownlint" },
+        ensure_installed = { "stylua", "prettier", "shfmt", "markdownlint" }, -- black removed
         auto_update = false,
         run_on_start = true,
       },
@@ -124,11 +124,6 @@ require("lazy").setup({
                 return { exe = "prettier", args = { "--stdin-filepath", vim.api.nvim_buf_get_name(0) }, stdin = true }
               end,
             },
-            python = {
-              function()
-                return { exe = "black", args = { vim.api.nvim_buf_get_name(0) }, stdin = false }
-              end,
-            },
           },
         })
         vim.keymap.set("n", "<leader>f", function()
@@ -154,6 +149,15 @@ require("lazy").setup({
         table.insert(opts.sections.lualine_x, function()
           return "😄"
         end)
+      end,
+    },
+
+    -- Markdown Preview (Web-based)
+    {
+      "iamcco/markdown-preview.nvim",
+      ft = "markdown",
+      build = function()
+        vim.fn["mkdp#util#install"]()
       end,
     },
   },
@@ -188,3 +192,8 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 vim.keymap.set("n", "<C-n>", function()
   require("trouble").toggle("diagnostics")
 end)
+
+-- Markdown preview keymap
+vim.keymap.set("n", "<leader>v", function()
+  vim.cmd("MarkdownPreviewToggle")
+end, { desc = "Toggle Markdown Preview" })

@@ -1,137 +1,249 @@
-# 💤 LazyVim
-
-A starter template for [LazyVim](https://github.com/LazyVim/LazyVim).
-Refer to the [documentation](https://lazyvim.github.io/installation) to get started.
-
-# Neovim + LazyVim Setup for React / TypeScript Development
+# 💤 LazyVim Neovim Setup
 
 ![LazyVim startup screen](assets/lazy.png)
 
-This repository contains my **personal Neovim configuration** optimized for **React and TypeScript development**. It uses **LazyVim** as the core framework with **Lazy.nvim** for plugin management, along with auto-save and live diagnostics.
+A personal Neovim configuration optimized for **React**, **TypeScript**, **Python**, and general development. Built on [LazyVim](https://github.com/LazyVim/LazyVim) with [Lazy.nvim](https://github.com/folke/lazy.nvim) for modular plugin management.
 
 ---
 
-## Features
+## Table of Contents
 
-### Core Plugins
+- [Overview](#overview)
+- [Core Plugins](#core-plugins)
+- [Language Support](#language-support)
+- [Editor Features](#editor-features)
+- [Navigation & Keybindings](#navigation--keybindings)
+- [Fuzzy Finder](#fuzzy-finder)
+- [LSP & Development Tools](#lsp--development-tools)
+- [Snippets](#snippets)
+- [Status Line](#status-line)
+- [Markdown Preview](#markdown-preview)
+- [Installation](#installation)
+- [Configuration Notes](#configuration-notes)
+- [Contributing](#contributing)
+- [References](#references)
 
-* **[LazyVim](https://github.com/LazyVim/LazyVim)** – Base framework for modular Neovim configuration.
-* **[Lazy.nvim](https://github.com/folke/lazy.nvim)** – Lazy-loading plugin manager.
-* **[nvim-tree](https://github.com/nvim-tree/nvim-tree.lua)** – File explorer on the **right side**.
+---
 
-![NvimTree file explorer on the right](assets/nvim_tree.png)
+## Overview
 
-* **[bufferline.nvim](https://github.com/akinsho/bufferline.nvim)** – Shows buffers in a clean, slanted style.
-* **[nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons)** – File type icons.
+This configuration is designed for fast, productive development in modern web and backend languages. It includes:
 
-### Programming Language Support
+- LSP support for TypeScript, JavaScript, Python, HTML, CSS, JSON
+- Auto-completion with emoji support
+- Live diagnostics and error reporting
+- Treesitter syntax highlighting and code folding
+- File explorer and bufferline for efficient navigation
+- Web-based Markdown preview for documentation editing
+- Auto-save functionality
 
-* **TypeScript & JavaScript** via `tsserver`.
-* **Python** via `pyright`.
-* **Treesitter** parsers for syntax highlighting:
+---
 
-  * `bash`, `html`, `javascript`, `json`, `lua`, `markdown`, `python`, `tsx`, `typescript`, `yaml`, and more.
+## Core Plugins
 
-### Editor Features
+| Plugin | Purpose |
+|--------|---------|
+| [LazyVim](https://github.com/LazyVim/LazyVim) | Modular Neovim framework |
+| [Lazy.nvim](https://github.com/folke/lazy.nvim) | Lazy-loading plugin manager |
+| [nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua) | File explorer (right side) |
+| [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) | Buffer tabs in slanted style |
+| [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) | File type icons |
+| [auto-save.nvim](https://github.com/Pocco81/auto-save.nvim) | Automatic file saving |
+| [trouble.nvim](https://github.com/folke/trouble.nvim) | Diagnostics panel |
+| [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) | Auto-completion engine |
 
-* **Auto-save**: Automatically saves files on leaving insert mode or after text changes using [`auto-save.nvim`](https://github.com/Pocco81/auto-save.nvim).
-* **Completion**: `nvim-cmp` with emoji support.
-* **Diagnostics**: Live LSP diagnostics with inline virtual text, gutter signs, and underlines.
-* **Navigation**: Keymaps for navigating diagnostics:
+---
 
-  * `<leader>e` – show floating diagnostics
-  * `[d` / `]d` – previous / next diagnostic
+## Language Support
 
-### Fuzzy Finder
+### LSP Servers
 
-* **[Telescope](https://github.com/nvim-telescope/telescope.nvim)** for fast file searching.
-* Plugin-specific file searching (`<leader>fp`) within the Neovim project.
+| Language | Server |
+|----------|--------|
+| TypeScript/JavaScript | `ts_ls` (tsserver) |
+| Python | `pyright` |
+| HTML | `html` |
+| CSS | `cssls` |
+| JSON | `jsonls` |
+| TailwindCSS | `tailwindcss` |
 
-### LSP & Development Tools
+### Treesitter Parsers
 
-* **Mason.nvim** to ensure essential development tools are installed:
+Installed parsers for enhanced syntax highlighting and code folding:
 
-  * `stylua`, `shellcheck`, `shfmt`, `flake8`
-* **TypeScript helpers** via `typescript.nvim`.
 
-### Snippets
+---
 
-* **LuaSnip** + **friendly-snippets** for code snippet support.
+## Editor Features
 
-### Status Line
+### Auto-save
 
-* **Lualine** with a simple, customizable display, including emoji indicators.
+- Automatically saves files on leaving insert mode or after text changes
+- Does not interfere with LSP diagnostics
+
+### Completion
+
+- `nvim-cmp` with emoji support
+- Snippet integration with LuaSnip
+
+### Diagnostics
+
+- Live inline error messages with virtual text
+- Gutter signs for errors and warnings
+- Underlines for diagnostic highlights
+- Severity sorting for better readability
+
+### Formatting
+
+| File Type | Formatter |
+|-----------|-----------|
+| Lua | stylua |
+| JavaScript/TypeScript | prettier |
+| Shell | shfmt |
+| Markdown | markdownlint |
+
+> **Note**: Python formatting (black) has been removed due to installation issues.
+
+---
+
+## Navigation & Keybindings
+
+![Which-key popup showing leader key shortcuts](assets/which_key_prop.png)
+
+
+**Leader key** is set to **Space** by default.
+
+### Diagnostics Navigation
+
+| Key | Action |
+|-----|--------|
+| `<leader>e` | Show floating diagnostic window |
+| `[d` | Go to previous diagnostic |
+| `]d` | Go to next diagnostic |
+| `<C-n>` | Toggle Trouble diagnostics panel |
+
+### General Navigation
+
+| Key | Action |
+|-----|--------|
+| `<leader>f` | Format current file |
+| `<leader>v` | Toggle Markdown preview (browser-based) |
+
+---
+
+## Fuzzy Finder
+
+**[Telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)** for fast file and content searching.
+
+| Key | Action |
+|-----|--------|
+| `<leader>fp` | Find project/plugin files |
+| `<leader>fs` | Search project content (live grep) |
+
+---
+
+## LSP & Development Tools
+
+### Mason.nvim
+
+Ensures essential development tools are automatically installed:
+
+| Tool | Purpose |
+|------|---------|
+| stylua | Lua formatter |
+| prettier | JavaScript/TypeScript formatter |
+| shfmt | Shell script formatter |
+| markdownlint | Markdown linting |
+
+### Mason-lspconfig
+
+Automatically configures installed LSP servers:
+
+
+
+---
+
+## Snippets
+
+- **[LuaSnip](https://github.com/L3MON4D3/LuaSnip)** - Snippet engine
+- **[friendly-snippets](https://github.com/rafamadriz/friendly-snippets)** - VS Code-style snippet collection
+
+Snippets are automatically loaded and available for all supported file types.
+
+---
+
+## Status Line
+
+**[Lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)** with:
+
+- Mode indicator
+- File type with icon
+- Git branch and status
+- File location (line/column)
+- Emoji indicator for personality
+
+---
+
+## Markdown Preview
+
+**[markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim)** - Web-based live preview
+
+### Features
+
+- Toggle with `<leader>v` (single keypress, like VS Code)
+- Live updates as you edit
+- Full CSS/HTML rendering (not just terminal text)
+- Opens in your default browser
+
+### Requirements
+
+- Node.js (v16+ recommended)
+
+### Usage
+
+1. Open a `.md` file in Neovim
+2. Press `<leader>v`
+3. Browser opens with live preview
+4. Edit your Markdown - preview updates automatically
+5. Press `<leader>v` again to close
 
 ---
 
 ## Installation
 
-1. **Clone this repository**:
+### Prerequisites
+
+- Neovim v0.11 or higher
+- Git
+- Node.js & npm (for Markdown preview and TypeScript)
+- A Nerd Font (for icons)
+
+### Step 1: Clone the Repository
 
 ```bash
+git clone h### Step 1: Clone the Repository
+
+```bash
+# Linux / macOS
 git clone https://github.com/kencal20/nvim_lazy_setup.git ~/.config/nvim
-```
 
-2. **Install Neovim** (v0.9+ recommended).
+# Windows (PowerShell or CMD)
+git clone https://github.com/kencal20/nvim_lazy_setup.git %LOCALAPPDATA%\nvimttps://github.com/kencal20/nvim_lazy_setup.git ~/.config/nvim
 
-3. **Install Node.js & npm** (for TypeScript, React):
-
-```bash
-npm install -g typescript
-```
-
-4. **Open Neovim**:
-
-```bash
+Launch Nvim(in terminal)
 nvim
 ```
 
-* Lazy.nvim will automatically bootstrap and install all plugins.
-
-5. **Verify LSP & Treesitter parsers**:
-
-* Mason will install missing language servers.
-* Treesitter will automatically install required parsers.
-
----
-
-## Keybindings
-
-> **Note:** The `<leader>` key is set to **Space** by default.
-
-![Which-key popup showing leader key shortcuts](assets/which_key_prop.png)
-
-| Key          | Action                                    |
-| ------------ | ----------------------------------------- |
-| `<leader>fp` | Find plugin/project files using Telescope |
-| `<leader>e`  | Show diagnostics in floating window       |
-| `[d` / `]d`  | Navigate to previous/next diagnostic      |
-
----
-
-## Notes
-
-* **Leader key**: Set to **Space** by default.
-* **All keybindings using `<leader>`** reflect this.
-* **Auto-save** does not interfere with LSP diagnostics. Errors are updated live while typing.
-* **NvimTree** is set to appear on the **right side** by default.
-* This setup is tailored for **fast React/TypeScript development**, but can be extended for other languages.
-
----
-
-## Contributing
-
-Feel free to fork and modify this configuration. Open a PR if you have improvements, especially for additional plugin setups or LSP integrations.
-
----
-
 ## References
 
-* [LazyVim](https://github.com/LazyVim/LazyVim)
-* [Lazy.nvim](https://github.com/folke/lazy.nvim)
-* [nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua)
-* [auto-save.nvim](https://github.com/Pocco81/auto-save.nvim)
-* [nvim-cmp](https://github.com/hrsh7th/nvim-cmp)
-* [Telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
-* [Treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
-* [LuaSnip](https://github.com/L3MON4D3/LuaSnip)
+| Plugin | Repository |
+|--------|------------|
+| LazyVim | [github.com/LazyVim/LazyVim](https://github.com/LazyVim/LazyVim) |
+| Lazy.nvim | [github.com/folke/lazy.nvim](https://github.com/folke/lazy.nvim) |
+| nvim-tree | [github.com/nvim-tree/nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua) |
+| Telescope | [github.com/nvim-telescope/telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) |
+| Treesitter | [github.com/nvim-treesitter/nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) |
+| Mason | [github.com/williamboman/mason.nvim](https://github.com/williamboman/mason.nvim) |
+| markdown-preview | [github.com/iamcco/markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim) |
+| LuaSnip | [github.com/L3MON4D3/LuaSnip](https://github.com/L3MON4D3/LuaSnip) |
+| Lualine | [github.com/nvim-lualine/lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) |
