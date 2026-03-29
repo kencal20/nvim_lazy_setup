@@ -71,7 +71,7 @@ require("lazy").setup({
       "WhoIsSethDaniel/mason-tool-installer.nvim",
       dependencies = { "mason-org/mason.nvim" },
       opts = {
-        ensure_installed = { "stylua", "prettier", "shfmt", "markdownlint" }, -- black removed
+        ensure_installed = { "stylua", "prettier", "shfmt", "markdownlint" },
         auto_update = false,
         run_on_start = true,
       },
@@ -197,3 +197,14 @@ end)
 vim.keymap.set("n", "<leader>v", function()
   vim.cmd("MarkdownPreviewToggle")
 end, { desc = "Toggle Markdown Preview" })
+
+-- ✅ Fix .env filetype (prevents shellcheck warnings)
+vim.filetype.add({
+  filename = {
+    [".env"] = "env",
+    [".env.example"] = "env",
+  },
+  pattern = {
+    [".*%.env%..*"] = "env",
+  },
+})
