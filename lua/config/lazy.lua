@@ -51,7 +51,17 @@ require("lazy").setup({
     -- LSP
     {
       "neovim/nvim-lspconfig",
-      opts = { servers = { pyright = {}, ts_ls = {}, tailwindcss = {}, html = {}, cssls = {}, jsonls = {} } },
+      opts = {
+        servers = {
+          pyright = {},
+          ts_ls = {},
+          tailwindcss = {},
+          html = {},
+          cssls = {},
+          jsonls = {},
+          bashls = {}, -- <- add bash LSP
+        }
+      },
     },
 
     -- Mason
@@ -65,13 +75,20 @@ require("lazy").setup({
     {
       "mason-org/mason-lspconfig.nvim",
       dependencies = { "mason-org/mason.nvim" },
-      opts = { ensure_installed = { "ts_ls", "pyright", "tailwindcss", "html", "cssls", "jsonls" } },
+      opts = { ensure_installed = { "ts_ls", "pyright", "tailwindcss", "html", "cssls", "jsonls", "bashls" } },
     },
     {
       "WhoIsSethDaniel/mason-tool-installer.nvim",
       dependencies = { "mason-org/mason.nvim" },
       opts = {
-        ensure_installed = { "stylua", "prettier", "shfmt", "markdownlint" },
+        ensure_installed = {
+          "stylua",
+          "prettier",
+          "shfmt",
+          "markdownlint",
+          "shellcheck",
+          "bash-language-server", -- <- automatic install
+        },
         auto_update = false,
         run_on_start = true,
       },
