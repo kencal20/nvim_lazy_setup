@@ -16,7 +16,6 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   spec = {
-
     -- Core
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
     { import = "lazyvim.plugins.extras.lang.typescript" },
@@ -30,6 +29,34 @@ require("lazy").setup({
       opts = { view = { side = "right" } },
     },
     { "akinsho/bufferline.nvim", version = "*", dependencies = { "nvim-tree/nvim-web-devicons" } },
+
+    -- Git Integration (VS Code style with smart toggle)
+    {
+      "sindrets/diffview.nvim",
+      cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles" },
+      keys = {
+        {
+          "<leader>gd",
+          function()
+            -- Safe check: only check the view if the library is actually loaded
+            local lib_loaded, lib = pcall(require, "diffview.lib")
+            if lib_loaded and lib.get_current_view() then
+              vim.cmd("DiffviewClose")
+            else
+              vim.cmd("DiffviewOpen")
+            end
+          end,
+          desc = "Toggle DiffView (Side-by-Side)",
+        },
+      },
+    },
+    {
+      "kdheepak/lazygit.nvim",
+      cmd = { "LazyGit" },
+      keys = {
+        { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit Dashboard" },
+      },
+    },
 
     -- Auto-save
     {
@@ -215,7 +242,7 @@ vim.keymap.set("n", "<leader>v", function()
   vim.cmd("MarkdownPreviewToggle")
 end, { desc = "Toggle Markdown Preview" })
 
--- ✅ Fix .env filetype (prevents shellcheck warnings)
+-- ✅ Fix .env filetype
 vim.filetype.add({
   filename = {
     [".env"] = "env",
