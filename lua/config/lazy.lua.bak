@@ -19,10 +19,6 @@ require("lazy").setup({
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
     { import = "lazyvim.plugins.extras.lang.typescript" },
     { import = "lazyvim.plugins.extras.lang.json" },
-    { import = "lazyvim.plugins.extras.lang.python" },
-
-    -- Debugging (DAP) Core Extra
-    { import = "lazyvim.plugins.extras.dap.core" },
 
     -- UI
     { "nvim-tree/nvim-web-devicons", lazy = false },
@@ -41,6 +37,7 @@ require("lazy").setup({
         {
           "<leader>gd",
           function()
+            -- Safe check: only check the view if the library is actually loaded
             local lib_loaded, lib = pcall(require, "diffview.lib")
             if lib_loaded and lib.get_current_view() then
               vim.cmd("DiffviewClose")
@@ -88,12 +85,12 @@ require("lazy").setup({
           html = {},
           cssls = {},
           jsonls = {},
-          bashls = {},
+          bashls = {}, -- <- add bash LSP
         },
       },
     },
 
-    -- Mason & Debugger Adapters
+    -- Mason
     {
       "mason-org/mason.nvim",
       lazy = false,
@@ -107,18 +104,6 @@ require("lazy").setup({
       opts = { ensure_installed = { "ts_ls", "pyright", "tailwindcss", "html", "cssls", "jsonls", "bashls" } },
     },
     {
-      "jay-babu/mason-nvim-dap.nvim",
-      dependencies = { "mason-org/mason.nvim", "mfussenegger/nvim-dap" },
-      opts = {
-        ensure_installed = {
-          "python",
-          "js",
-          "bash",
-        },
-        automatic_installation = true,
-      },
-    },
-    {
       "WhoIsSethDaniel/mason-tool-installer.nvim",
       dependencies = { "mason-org/mason.nvim" },
       opts = {
@@ -129,40 +114,13 @@ require("lazy").setup({
           "markdownlint",
           "shellcheck",
           "bash-language-server",
-          "ruff",
+          "ruff", -- ← Python formatter + linter
+          -- "black",      -- alternative if you prefer black
+          -- "isort",      -- optional import sorter
         },
         auto_update = false,
         run_on_start = true,
       },
-    },
-
-    -- DAP UI Configuration (With VS Code-style controls bar)
-    {
-      "rcarriga/nvim-dap-ui",
-      dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
-      opts = {
-        controls = {
-          element = "repl",
-          enabled = true,
-          icons = {
-            pause = "⏸",
-            play = "▶",
-            step_into = "⏎",
-            step_over = "⏭",
-            step_out = "⏮",
-            step_back = "b",
-            run_last = "▶▶",
-            terminate = "⏹",
-            disconnect = "⏏",
-          },
-        },
-      },
-    },
-
-    -- DAP Virtual Text (Inline variable state display)
-    {
-      "theHamsta/nvim-dap-virtual-text",
-      opts = {},
     },
 
     -- Treesitter
@@ -212,6 +170,7 @@ require("lazy").setup({
                 return { exe = "prettier", args = { "--stdin-filepath", vim.api.nvim_buf_get_name(0) }, stdin = true }
               end,
             },
+            -- ✅ Python formatter added
             python = {
               function()
                 return {
@@ -254,7 +213,7 @@ require("lazy").setup({
       end,
     },
 
-    -- Markdown Preview
+    -- Markdown Preview (Web-based)
     {
       "iamcco/markdown-preview.nvim",
       ft = "markdown",
@@ -300,7 +259,7 @@ vim.keymap.set("n", "<leader>v", function()
   vim.cmd("MarkdownPreviewToggle")
 end, { desc = "Toggle Markdown Preview" })
 
--- Fix .env filetype
+-- ✅ Fix .env filetype
 vim.filetype.add({
   filename = {
     [".env"] = "env",
